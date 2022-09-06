@@ -340,9 +340,8 @@ int main()
                     std::endl;
 
 
-#ifdef BENCHMARK_EXPORT
+#ifdef EXPORT
                 //if(hausdorffMean[i] < 0.0000185 *1.005 && hausdorffMean[i] > 0.0000185 *0.995)
-                if(false)
                 {
                     std::stringstream ss;
                     ss << std::fixed << std::setprecision(12) << hausdorffMean[i];
@@ -355,7 +354,7 @@ int main()
                     std::string suffix = std::to_string(decimation) + "_" + std::to_string(threads[j]) + "_" + methodName + "_HD" + hausdorff;
 
 
-                    //exportObj(hausdorfVertices, hausdorfFaces, meshName, suffix);
+                    exportObj(OUTPUT_DIRECTORY, hausdorfVertices, hausdorfFaces, meshName, suffix);
                     std::cout << "Exported" << std::endl;
 
                 }

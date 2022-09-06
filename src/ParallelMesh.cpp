@@ -636,7 +636,7 @@ void ParallelMesh::reduceVertices(int finalSize, int countThreads) {
 			m_vertices[indexCounter++] = m_vertices[i];
 		}
 	}
-#endif VECTOR_REDUCTION
+#endif // !VECTOR_REDUCTION
 	m_vertices.erase(m_vertices.begin() + finalSize, m_vertices.end());
 
 	auto& faceIndices = m_faceIndices;

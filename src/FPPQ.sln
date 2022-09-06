@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.32228.343
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Parallel Meshes", "Parallel Meshes.vcxproj", "{0AD8EAFA-5B3C-4C57-A28B-F3CDEBBB4064}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "FPPQ", "FPPQ.vcxproj", "{0AD8EAFA-5B3C-4C57-A28B-F3CDEBBB4064}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
