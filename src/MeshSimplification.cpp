@@ -13,6 +13,7 @@
 #include "MeshMetrics.h"
 #include "ParallelMesh.h"
 #include "FPPQ.h"
+#include "Examples.h"
 // ----------------------------------------------------------------------------
 
 typedef std::chrono::high_resolution_clock Clock;
@@ -38,6 +39,9 @@ void exportObj(std::string rootPath, std::vector<glm::vec3> vertices, std::vecto
 
 int main()
 {
+    //FPPQExample();
+    //meshDecimationExample();
+
     std::string methodName = typeid(PRIORITY_STRUCTURE).name();
     methodName = methodName.substr(methodName.find_last_of(" ") + 1);
     std::string meshName = MESH_PATH;
@@ -65,7 +69,7 @@ int main()
 #endif
     
 
-    auto t4 = Clock::now();
+    auto t1 = Clock::now();
 
     int threads;
 #ifdef SINGLE_THREADED
@@ -73,23 +77,23 @@ int main()
 #else
     threads = NUM_THREADS;
 #endif // SINGLE_THREADED
-    //{0.75, .25, .05, .01, .001}
-    float decimation = .001;
+    //{0.75f, .25f, .05f, .01f, .001f}
+    float decimation = .001f;
     pMesh.computeQuadricErrorMatrices(threads);
     int finalVertexCount = pMesh.reduceVerticesTo(decimation, threads);
     pMesh.reduceVertices(finalVertexCount, threads);
     pMesh.deletePriorityStructure();
-    auto t5 = Clock::now();
-    std::cout << "pMesh decimation: "
-        << std::chrono::duration_cast<std::chrono::milliseconds>(t5 - t4).count()
+    auto t2 = Clock::now();
+    std::cout << "Mesh decimation: "
+        << std::chrono::duration_cast<std::chrono::milliseconds>(t2 - t1).count()
         << " ms" << std::endl;
     std::pair<std::vector<glm::vec3>, std::vector<glm::vec3>> data = pMesh.getData();
     std::vector<glm::vec3> vertices = data.first;
     std::vector<glm::vec3> normals = data.second;
 
-    auto t6 = Clock::now();
-    std::cout << "pMesh complete: "
-        << std::chrono::duration_cast<std::chrono::milliseconds>(t6 - t0).count()
+    auto t3 = Clock::now();
+    std::cout << "Mesh decimation including load: "
+        << std::chrono::duration_cast<std::chrono::milliseconds>(t3 - t0).count()
         << " ms" << std::endl;
 #ifndef NO_HAUSDORFF
     {
@@ -236,12 +240,12 @@ int main()
 #ifndef BENCHMARK_DEBUG
     std::vector<float> percentiles;
     if(meshName == "dragon")
-        percentiles = { {.25, .05, .01} };
-        //percentiles = { {.05, .04, .03, .02, .01} };
-        //percentiles = { {.01} };
+        percentiles = { {.25f, .05f, .01f} };
+        //percentiles = { {.05f, .04f, .03f, .02f, .01f} };
+        //percentiles = { {.01f} };
     else
-        percentiles = { { .05, .01, .001} };
-        //percentiles = { {  .001} };
+        percentiles = { {.05f, .01f, .001f} };
+        //percentiles = { {.001f} };
     std::vector<std::chrono::microseconds> iterationTimesInitTotal(countIterations * threads.size() * percentiles.size());
     std::vector<std::chrono::microseconds> iterationTimesDecimationTotal(countIterations * threads.size() * percentiles.size());
     std::vector<std::chrono::microseconds> iterationTimesDeleteTotal(countIterations * threads.size() * percentiles.size());
@@ -259,13 +263,8 @@ int main()
         // Similarity reference
         std::string percent;
 #ifdef BENCHMARK_DEBUG
-        float decimation = 0.001f;
-       
-        if(decimation >= 0.01f) {
-            percent = std::to_string(int(decimation * 100)) + "%";
-        } else {
-            percent = "0," + std::to_string(int(decimation * 1000)) + "%";
-        }
+        int decimation = DESIRED_NUMBER_OF_VERTICES;
+        percent = std::to_string(int(decimation));
 #else
         if(percentiles[k] >= 0.01f) {
             percent = std::to_string(int(percentiles[k] * 100)) + "%";

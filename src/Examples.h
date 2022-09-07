@@ -7,7 +7,7 @@
 #include "FPPQMesh.h"
 #include "ParallelMesh.h"
 
-void FPPQexample() {
+void FPPQExample() {
     int maxCapacity = 9999999;
     FPPQ<float> fppq(maxCapacity); // Create a priority Queue with float errors and a maximum capacity of 9999999 elements
 
@@ -15,7 +15,7 @@ void FPPQexample() {
     for(int i = 0; i < 1000000; i++) {
         initialValues.push_back({ 1.f + sin(float(i) / 100.f),i }); // Setup each element with an inital error
     }
-    int countThreads = 4;
+    int countThreads = 4; // A smaller number of threads than is often better (in the non mesh decimation case)
     fppq.fill(initialValues, countThreads); // Initialise the queue with 4 Threads (the parallel std::sorting function inside can actually use more than that)
 
 #pragma omp parallel for num_threads(countThreads)
@@ -44,7 +44,7 @@ void meshDecimationExample() {
 
 
     int countThreads = 4;
-    float decimation = .01; // Decimation to 1% of original vertices
+    float decimation = .01f; // Decimation to 1% of original vertices
     pMesh.computeQuadricErrorMatrices(countThreads); // Initialise the error quadrics with 4 threads (the parallel std::sorting function inside can actually use more than that)
     int finalVertexCount = pMesh.reduceVerticesTo(decimation, countThreads); // Reduce the mesh with 4 threads to 1%
     pMesh.reduceVertices(finalVertexCount, countThreads); // Perform the deletion of the Collapsed vertices and repair the mesh structure (vertex ids etc.)

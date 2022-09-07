@@ -38,6 +38,7 @@ public:
 
 	// Mesh Decimation
 	int reduceVerticesTo(float nrVertices, int countThreads);
+	int reduceVerticesTo(int nrVertices, int countThreads);
 
 	std::pair<std::vector<glm::vec3>, std::vector<glm::vec3>> getData();
 	std::vector<glm::vec3> getVertices();
