@@ -71,5 +71,8 @@
     <ClInclude Include="FPPQMesh.h">
       <Filter>Quelldateien</Filter>
     </ClInclude>
+    <ClInclude Include="Examples.h">
+      <Filter>Quelldateien</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

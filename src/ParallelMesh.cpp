@@ -17,6 +17,7 @@
 
 #undef min
 
+// Reduce the mesh to nrVertices (if it is smaller than 1 it is treated as a percentage) and returns the amount of leftover Vertices
 int ParallelMesh::reduceVerticesTo(float nrVertices, int countThreads)
 {
 	if (nrVertices >= m_vertices.size())

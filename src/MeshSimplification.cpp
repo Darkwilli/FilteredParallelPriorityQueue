@@ -35,9 +35,9 @@ void exportObj(std::string rootPath, std::vector<glm::vec3> vertices, std::vecto
     outFile.close();
 }
 
+
 int main()
 {
-
     std::string methodName = typeid(PRIORITY_STRUCTURE).name();
     methodName = methodName.substr(methodName.find_last_of(" ") + 1);
     std::string meshName = MESH_PATH;
