@@ -199,12 +199,7 @@ float QuadricErrorMetric::setNextBestError(Vertex& v)
 	auto& faceIndices = parent.m_faceIndices;
 #ifdef TRIANGLE_INDICES
 	auto& faces = parent.m_faces;
-#endif // #ifdef TRIANGLE_INDICES
-
-#ifdef RANDOM_ERROR_CALCULATION
-	int nrVerts = 0;
-#endif // RANDOM_ERROR_CALCULATION
-
+#endif // !TRIANGLE_INDICES
 	{
 		float oldError = m_error;
 		int oldIndex = m_index;
@@ -230,8 +225,6 @@ float QuadricErrorMetric::setNextBestError(Vertex& v)
 			//glm::dmat4x4 m_q = getQuadric();
 
 			while (!stop && adjacentVerticesIndices[currentPos] != -1) {
-
-#ifndef RANDOM_ERROR_CALCULATION
 				if (v.getVertexIndex() != adjacentVerticesIndices[currentPos]) // we dont want to calculate our own error (0)
 				{
 					glm::dvec3 pos = parent.getVertex(adjacentVerticesIndices[currentPos]).getPos();
@@ -252,9 +245,6 @@ float QuadricErrorMetric::setNextBestError(Vertex& v)
 						}
 					}
 				}
-#else
-				nrVerts++;
-#endif // DYNAMIC_ERROR_CALCULATION
 
 
 				if (++ctr != slotSize) {
@@ -291,14 +281,6 @@ void QuadricErrorMetric::update(Vertex& v)
 #ifdef TRIANGLE_INDICES
 	auto& faces = parent.m_faces;
 #endif // #ifdef TRIANGLE_INDICES
-
-#ifdef RANDOM_ERROR_CALCULATION
-	int nrVerts = 0;
-#endif // RANDOM_ERROR_CALCULATION
-
-#ifdef RANDOM_ERROR_CALCULATION
-	if (m_valid < 0)
-#endif
 	{
 		m_error = std::numeric_limits<float>::max();
 		{
@@ -322,8 +304,6 @@ void QuadricErrorMetric::update(Vertex& v)
 			//glm::dmat4x4 m_q = getQuadric();
 
 			while (!stop && adjacentVerticesIndices[currentPos] != -1) {
-
-#ifndef RANDOM_ERROR_CALCULATION
 				if (v.getVertexIndex() != adjacentVerticesIndices[currentPos]) // we dont want to calculate our own error (0)
 				{
 					glm::dvec3 pos = parent.getVertex(adjacentVerticesIndices[currentPos]).getPos();
@@ -340,9 +320,6 @@ void QuadricErrorMetric::update(Vertex& v)
 						m_index = adjacentVerticesIndices[currentPos];
 					}
 				}
-#else
-				nrVerts++;
-#endif // DYNAMIC_ERROR_CALCULATION
 
 
 				if (++ctr != slotSize) {
@@ -363,64 +340,6 @@ void QuadricErrorMetric::update(Vertex& v)
 			}
 		}
 	}
-#ifdef RANDOM_ERROR_CALCULATION
-	else {
-		nrVerts = m_valid;
-	}
-	thread_local static std::random_device rd;
-	thread_local static std::mt19937 rng(rd());
-	std::uniform_int_distribution<int> dist;// (0, m_size - 1);
-#ifdef TRUE_RANDOM_ERROR_CALCULATION
-	dist = std::uniform_int_distribution<int>(1, 100); // We dont want to get ourself (at first position)
-#else
-	dist = std::uniform_int_distribution<int>(1, nrVerts-1); // We dont want to get ourself (at first position)
-#endif
-
-	int draw = dist(rng);
-
-#ifdef TRUE_RANDOM_ERROR_CALCULATION
-	if (nrVerts > 100)
-		__debugbreak();
-
-	if (draw > nrVerts - 1) {
-		m_error = -10;
-		m_index = -10;
-		m_valid = nrVerts;
-		return;
-	}
-#endif
-
-	int slotNr = draw % slotSize;
-	int x = draw / slotSize;
-	int startPos = (slotSize + 1) * v.getVertexIndex();
-	int start = adjacentVerticesIndices[startPos];
-	int currentPos = startPos + 1;
-	//glm::dmat4x4 m_q = getQuadric();
-
-	while (x > 0) {
-		startPos = start;
-		start = adjacentVerticesIndices[startPos];
-		currentPos = startPos + 1;
-	
-		x--;
-	}
-	currentPos += slotNr;
-	glm::dvec3 pos = parent.getVertex(adjacentVerticesIndices[currentPos]).getPos();
-	glm::dvec4 vq = glm::dvec4(pos, 1) * (m_q + parent.getVertex(adjacentVerticesIndices[currentPos]).getErrorMetric().getQuadric());
-	//glm::dvec4 vq = glm::dvec4(pos, 1) * getQuadric();
-	float error = vq.x * pos.x + vq.y * pos.y + vq.z * pos.z + vq.w;
-	if (error < 0.f)
-	{
-		// Ignore negative errors that happen because of precision errors 
-		//__debugbreak();
-	}
-	{
-		m_error = error;
-		m_index = adjacentVerticesIndices[currentPos];
-	}
-
-#endif
-
 
 #ifndef NO_DEBUG_CHECKS
 	if (m_index == -1) {
