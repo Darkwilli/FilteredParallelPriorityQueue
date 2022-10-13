@@ -1,6 +1,6 @@
 # FPPQ
 
-This is an implementation of the "Relaxed Parallel Priority Queue with Filter Levels" from our VMV 2022 paper (link). 
+This is an implementation of the "Relaxed Parallel Priority Queue with Filter Levels" from our VMV 2022 paper: https://diglib.eg.org/handle/10.2312/vmv20221202. 
 
 There is a general implementation of the Priority Queue in FPPQ.h, which contains the changeable parameters for the filter levels.
 Additionally, there is an implementation used for mesh decimation in FPPQMesh.h and the framework for mesh decimation in most of the other files. There are implementations for a Multi Queue and  a single threaded Priority Queue that can be used for mesh decimation as well.
