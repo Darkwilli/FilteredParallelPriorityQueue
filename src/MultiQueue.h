@@ -2,6 +2,7 @@
 #include <atomic>
 #include <vector>
 #include <Windows.Foundation.h>
+#include "defines.h"
 
 class ParallelMesh;
 
